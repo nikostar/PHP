@@ -1,10 +1,10 @@
 <?php
 
-class Dbh{
-	private $dbServername = "localhost";
-	private $dbUsername = "root";
-	private $dbPassword = "";
-	private $dbName = "test1";
+class DatabaseHandler{
+	private $dbServername="localhost";
+	private $dbUsername="root";
+	private $dbPassword="";
+	private $dbName="test1";
 
 	protected function connect(){
 		$dsn='mysql:host=' . $this->dbServername . ';dbname=' . $this->dbName;

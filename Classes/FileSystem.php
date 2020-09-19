@@ -1,13 +1,13 @@
 <?php
 
-class User extends Dbh{
+class FileSystem extends DatabaseHandler{
 
 	//
 	// update_table:
 	// Reset database given textfile
-	protected function update_table(){
+	public function CreateFileSystemFromText(){
 		//reset autoincrement
-		$sql="alter table test1 auto_increment=1;";
+		$sql="ALTER TABLE test1 AUTO_INCREMENT=1;";
 		$this->run_sql($sql);
 	
 		//redo the database
@@ -23,19 +23,19 @@ class User extends Dbh{
 			);";
 		$this->run_sql($sql);
 
-		$myfile = fopen("Text_file.txt", "r") or die("Unable to open file!");
+		$myfile=fopen("Text_file.txt", "r") or die("Unable to open file!");
 		$prevIdent=-1;
 		$left=1;
 		$right=2;
 
 		while(!feof($myfile)) {
 		  	$line=fgets($myfile);
-		  	$name= ltrim($line);
+		  	$name=ltrim($line);
 		  	$identSize = strlen($line)-strlen($name);
-//lala
+
 		  	if($prevIdent==-1)
 		  	{
-		  		$sql="INSERT INTO test1(name,lft,rgt) VALUES('$name', $left, $right);";
+		  		$sql="INSERT INTO test1(name, lft, rgt) VALUES('$name', $left, $right);";
 		  		$this->run_sql($sql);
 		  	}
 		  	else
@@ -46,7 +46,7 @@ class User extends Dbh{
 		  		$sql="UPDATE test1 SET rgt=rgt+2 WHERE rgt>=$left;";
 				$this->run_sql($sql);
 
-		  		$sql="INSERT INTO test1(name,lft,rgt) VALUES('$name', $left, $right);";
+		  		$sql="INSERT INTO test1(name, lft, rgt) VALUES('$name', $left, $right);";
 		  		$this->run_sql($sql);
 
 		  	}
@@ -57,12 +57,12 @@ class User extends Dbh{
 		fclose($myfile);		
 	}
 
-	protected function search_query(string $to_search){
-		if($to_search==Null){
+	public function SearchFilePath($file_name){
+		if($file_name==Null){
 			return Null;
 		}
 
-		$sql="SELECT * FROM test1 WHERE name LIKE '%$to_search%';";
+		$sql="SELECT * FROM test1 WHERE name LIKE '%$file_name%';";
 		$stmt=$this->connect()->prepare($sql);
 		$stmt->execute();
 
@@ -70,24 +70,24 @@ class User extends Dbh{
 		while($row=$stmt->fetch()){
 			$temp_lft=$row['lft'];
 			$temp_rgt=$row['rgt'];
-			$printed="";
+			$file_path="";
 			
 			$sql="SELECT name FROM test1 WHERE lft<=$temp_lft AND rgt>=$temp_rgt ORDER BY lft ASC;";
-			$to_print=$this->connect()->prepare($sql);
-			$to_print->execute();
+			$statement=$this->connect()->prepare($sql);
+			$statement->execute();
 
 			//return parents of each file
-			while($row2=$to_print->fetch()){				
-				$printed=$printed . trim($row2['name']) . "\\";
+			while($row2=$statement->fetch()){				
+				$file_path=$file_path . trim($row2['name']) . "\\";
 			}
 			
-			$new_str = substr($printed, 0,-1);
-			$array[]=$new_str;
+			$trimmed_file_path = substr($file_path, 0, -1);
+			$array_of_filepaths[]=$trimmed_file_path;
 		}
-		if(empty($array)){
-			$array[]="No files found!";
+		if(empty($array_of_filepaths)){
+			$array_of_filepaths[]="No files found!";
 		}		
-		return $array;
+		return $array_of_filepaths;
 	}
 
 	private function run_sql($sql){

@@ -15,14 +15,13 @@
 	</form>
 
 <?php
-	$userObj=new UsersContr();
-	$userObj->update_table_onreload();
+	
 	//if search button clicked...
 	if(isset($_GET['submit'])){
-		$search=$_GET['search'];
-		$userObj=new UsersContr();
-		$userObj->search_for($search);
+		$search_name=$_GET['search'];
+		$modelObj=new FileSystemController();
+		$modelObj->SearchGivenName($search_name);
 	}
-	?>
+?>
 </body>
 </html>
