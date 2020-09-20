@@ -16,7 +16,9 @@
 
 <?php
 	
-	//if search button clicked...
+	//if search button clicked,
+	//create the table from text file
+	//and search for paths to search input
 	if(isset($_GET['submit'])){
 		$search_name=$_GET['search'];
 		$modelObj=new FileSystemController();

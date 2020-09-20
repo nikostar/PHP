@@ -57,6 +57,7 @@ class FileSystem extends DatabaseHandler{
 		fclose($myfile);		
 	}
 
+	//return the paths to search results
 	public function SearchFilePath($file_name){
 		if($file_name==Null){
 			return Null;
@@ -76,7 +77,7 @@ class FileSystem extends DatabaseHandler{
 			$statement=$this->connect()->prepare($sql);
 			$statement->execute();
 
-			//return parents of each file
+			//return path to each file
 			while($row2=$statement->fetch()){				
 				$file_path=$file_path . trim($row2['name']) . "\\";
 			}
@@ -90,6 +91,7 @@ class FileSystem extends DatabaseHandler{
 		return $array_of_filepaths;
 	}
 
+	//run the sql query
 	private function run_sql($sql){
 		$stmt=$this->connect()->prepare($sql);
 		$stmt->execute();
